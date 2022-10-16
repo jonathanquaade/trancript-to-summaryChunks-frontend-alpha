@@ -10,30 +10,9 @@ import { violet, mauve, blackA, green } from '@radix-ui/colors';
 import { useState } from "react"
 import axios from "axios"
 
-
 const BACKEND_API = "https://transcript-to-summaryChunks-recursive-alpha-v1.jonathanquaade.repl.co"
 
-const Home: NextPage = () => {
-  const [data, setData] = useState({ title: "", transcript: "" })
-
-  const updateState = (type: any, value: any) => {
-    setData((data) => ({ ...data, [type]: value }))
-  }
-  const submitData = async (e: any) => {
-    e.preventDefault()
-
-    // await axios(BACKEND_API, {
-    //   method: "post",
-    //   data: { ...data },
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // })
-
-    setData({ title: "", transcript: "", })
-  }
-
-  // Your app...
+// Your app...
   const Container = styled('div', {
     display: 'flex',
     flexDirection: 'column',
@@ -146,6 +125,30 @@ const Home: NextPage = () => {
     '&:focus': { boxShadow: `0 0 0 2px ${violet.violet8}` },
   });
 
+const Home: NextPage = () => {
+
+  const initialState = {title: "", transcript: ""}
+  const [data, setData] = useState(initialState)
+
+  const updateState = (type: string, value: string) => {
+    console.log(type)
+    console.log(value)
+    setData((data) => ({ ...data, [type]: value }))
+  }
+
+  const submitData = async (e) => {
+    e.preventDefault()
+
+    await axios(BACKEND_API, {
+      method: "post",
+      data: { ...data },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    // setData({ title: "", transcript: "", })
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -159,24 +162,23 @@ const Home: NextPage = () => {
           <Box>
             <form onSubmit={submitData}>
               <Title>Transcript To Summary Chunks</Title>
-              <Text>This transformer takes in a transcript and returns a concise summary.<br />
+              <Text>This transformer takes in a transcript and returns a concise summary.
+                <br />
                 Version: Alpha V1
               </Text>
               <Fieldset>
-                <Label htmlFor="title">Title</Label>
-                <Input onChange={(e) => updateState("title", e.target.value)}
-                  id="title" placeholder="Title of interview" />
+                <Label htmlFor="title2">Title</Label>
+                <Input id="title" name="title" type="text" placeholder="Title of interview" onChange={(e) => updateState("title", e.target.value)} value={data.title} />
               </Fieldset>
               <Fieldset>
                 <Label htmlFor="transcript">Transcript</Label>
-                <TextArea onChange={(e) => updateState("transcript", e.target.value)}
-                  id="transcript" placeholder="Paste your transcript here" />
+                <TextArea id="transcript" name="transcript" onChange={(e) => updateState("transcript", e.target.value)} value={data.transcript} placeholder="Paste your transcript here"/>
               </Fieldset>
               <Flex css={{ marginTop: 20, justifyContent: 'flex-end' }}>
                 <Button disabled={
                   !data.title.length || !data.transcript.length
                 }
-                  type="submit" variant="green">Summarise</Button>
+                  type="submit" variant="violet">Summarise</Button>
               </Flex>
             </form>
           </Box>
