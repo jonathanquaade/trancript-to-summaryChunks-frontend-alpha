@@ -73,20 +73,24 @@ const Button = styled('button', {
   lineHeight: 1,
   fontWeight: 500,
   height: 35,
-
   variants: {
     variant: {
-      violet: {
+      active: {
         backgroundColor: 'white',
         color: violet.violet11,
         boxShadow: `0 2px 10px ${blackA.blackA7}`,
-        '&:hover': { backgroundColor: mauve.mauve3 },
+        '&:hover': { backgroundColor: mauve.mauve3, cursor: 'pointer' },
         '&:focus': { boxShadow: `0 0 0 2px black` },
+      },
+      disabled: {
+        backgroundColor: gray.gray4,
+        color: gray.gray8,
+        '&:focus': { boxShadow: `0 0 0 2px black` }
       },
       green: {
         backgroundColor: green.green4,
         color: green.green11,
-        '&:hover': { backgroundColor: green.green5 },
+        '&:hover': { backgroundColor: green.green5, cursor: 'pointer' },
         '&:focus': { boxShadow: `0 0 0 2px ${green.green7}` },
       },
     },
@@ -176,25 +180,30 @@ const Home: NextPage = () => {
   const initialState = { title: "", transcript: "", summary: "" }
   const [data, setData] = useState(initialState)
 
+  const [buttonText, setButtonText] = useState("Summarise");
+  const changeText = (text) => setButtonText(text);
+
+
   const updateState = (type: string, value: string) => {
     setData((data) => ({ ...data, [type]: value }))
   }
 
   const submitData = async (e) => {
+    changeText("Loading..")
     let result: object
     let summaryString: string
     e.preventDefault()
 
-    await axios(`${BACKEND_API}/v1`, {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((response) => {
-      console.log(response);
-    }, (error) => {
-      console.log(error);
-    });
+    // await axios(`${BACKEND_API}/v1`, {
+    //   method: "get",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // }).then((response) => {
+    //   console.log(response);
+    // }, (error) => {
+    //   console.log(error);
+    // });
 
     console.log(data.transcript)
 
@@ -208,10 +217,11 @@ const Home: NextPage = () => {
       console.log(response.data);
       console.log(response.data.summary)
       summaryString = response.data.summary.toString().replace(/,/g, " ")
-      console.log(result) 
+      console.log(result)
       // console.log(result)
       updateState("summary", summaryString)
-      
+      changeText("Summarise")
+
     }, (error) => {
       console.log('error', error);
     });
@@ -236,7 +246,7 @@ const Home: NextPage = () => {
                     Version: Alpha V1
                     <br />
                     This transformer takes in a transcript and returns a concise summary.
-                   
+
                   </Text>
                   <Fieldset>
                     <Label htmlFor="title">Title</Label>
@@ -250,7 +260,9 @@ const Home: NextPage = () => {
                     </Flex>
                   </Fieldset>
                   <Flex css={{ marginTop: 20, justifyContent: 'flex-end' }}>
-                    <Button type="submit" variant="violet">Summarise</Button>
+                    <Button type="submit" variant={data.transcript.length ? 'active' : 'disabled'}
+                      disabled={!data.transcript.length || buttonText == 'Loading..'}
+                      value={data.summary}>{buttonText}</Button>
                   </Flex>
                 </form>
               </Box>
@@ -260,7 +272,7 @@ const Home: NextPage = () => {
             <InnerContainer variant="dark">
               <Fieldset>
                 <Label variant="dark" htmlFor="summary">Output</Label>
-                <TextArea variant="dark" id="summary" name="summary" type="text" placeholder="Your summary will appear here" disabled={!data.transcript.length} value={data.summary} />
+                <TextArea variant="dark" id="summary" name="summary" placeholder="Your summary will appear here" disabled={!data.summary.length} value={data.summary} />
                 <Flex css={{ marginTop: 20, justifyContent: 'flex-end' }}>
                   <Text>Summary Count: {data.summary.length}</Text>
                 </Flex>
