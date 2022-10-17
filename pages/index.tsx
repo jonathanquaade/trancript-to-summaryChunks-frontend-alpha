@@ -5,151 +5,209 @@ import Image from 'next/image'
 
 import styles from '../styles/Home.module.css'
 import { styled } from '@stitches/react';
-import { violet, mauve, blackA, green } from '@radix-ui/colors';
+import { violet, mauve, blackA, green, gray, grayDark } from '@radix-ui/colors';
 
 import { useState } from "react"
 import axios from "axios"
 
-const BACKEND_API = "https://transcript-to-summaryChunks-recursive-alpha-v1.jonathanquaade.repl.co"
+const BACKEND_API = "https://transcript-to-summaryChunks-recursive-alpha-v1.jonathanquaade.repl.co/v1"
 
 // Your app...
-  const Container = styled('div', {
-    display: 'flex',
-    flexDirection: 'column',
-    borderRadius: 6,
-    width: 500,
-    boxShadow: `0 2px 10px ${blackA.blackA4}`,
-  });
+const Container = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  borderRadius: 6,
+  width: 500,
+  boxShadow: `0 2px 10px ${blackA.blackA4}`,
+});
 
-  const InnerContainer = styled('div', {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 6,
-    outline: 'none',
-    '&:focus': { boxShadow: `0 0 0 2px black` },
-  });
-
-  const Box = styled('div', {});
-  const Flex = styled('div', { display: 'flex' });
-
-  const Title = styled('div', {
-    marginBottom: 20,
-    color: 'black',
-    fontSize: 15,
-    lineHeight: 1.5,
-  });
-
-  const Text = styled('div', {
-    marginBottom: 20,
-    color: mauve.mauve11,
-    fontSize: 15,
-    lineHeight: 1.5,
-  });
-
-  const Button = styled('button', {
-    all: 'unset',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 4,
-    padding: '0 15px',
-    fontSize: 15,
-    lineHeight: 1,
-    fontWeight: 500,
-    height: 35,
-
-    variants: {
-      variant: {
-        violet: {
-          backgroundColor: 'white',
-          color: violet.violet11,
-          boxShadow: `0 2px 10px ${blackA.blackA7}`,
-          '&:hover': { backgroundColor: mauve.mauve3 },
-          '&:focus': { boxShadow: `0 0 0 2px black` },
-        },
-        green: {
-          backgroundColor: green.green4,
-          color: green.green11,
-          '&:hover': { backgroundColor: green.green5 },
-          '&:focus': { boxShadow: `0 0 0 2px ${green.green7}` },
-        },
+const InnerContainer = styled('div', {
+  flexGrow: 1,
+  padding: 20,
+  backgroundColor: 'white',
+  borderRadius: 6,
+  outline: 'none',
+  '&:focus': { boxShadow: `0 0 0 2px black` },
+   variants: {
+    variant: {
+      light: {
+        backgroundColor: 'white',
+        color: violet.violet11,
+      },
+      dark: {
+        backgroundColor: grayDark.gray2,
+        color: 'white',
       },
     },
+  },
 
-    defaultVariants: {
-      variant: 'violet',
+  defaultVariants: {
+    variant: 'light',
+  },
+});
+
+const Box = styled('div', {});
+const Flex = styled('div', { display: 'flex', gap: '1em' });
+
+const Title = styled('div', {
+  marginBottom: 20,
+  color: 'black',
+  fontSize: 15,
+  lineHeight: 1.5,
+});
+
+const Text = styled('div', {
+  marginBottom: 20,
+  color: mauve.mauve11,
+  fontSize: 15,
+  lineHeight: 1.5,
+});
+
+const Button = styled('button', {
+  all: 'unset',
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: 4,
+  padding: '0 15px',
+  fontSize: 15,
+  lineHeight: 1,
+  fontWeight: 500,
+  height: 35,
+
+  variants: {
+    variant: {
+      violet: {
+        backgroundColor: 'white',
+        color: violet.violet11,
+        boxShadow: `0 2px 10px ${blackA.blackA7}`,
+        '&:hover': { backgroundColor: mauve.mauve3 },
+        '&:focus': { boxShadow: `0 0 0 2px black` },
+      },
+      green: {
+        backgroundColor: green.green4,
+        color: green.green11,
+        '&:hover': { backgroundColor: green.green5 },
+        '&:focus': { boxShadow: `0 0 0 2px ${green.green7}` },
+      },
     },
-  });
+  },
 
-  const Fieldset = styled('fieldset', {
-    all: 'unset',
-    marginBottom: 15,
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-  });
+  defaultVariants: {
+    variant: 'violet',
+  },
+});
 
-  const Label = styled('label', {
-    fontSize: 13,
-    lineHeight: 1,
-    marginBottom: 10,
-    color: violet.violet12,
-    display: 'block',
-  });
+const Fieldset = styled('fieldset', {
+  all: 'unset',
+  marginBottom: 15,
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
+});
 
-  const Input = styled('input', {
-    all: 'unset',
-    flex: '1 0 auto',
-    borderRadius: 4,
-    padding: '0 10px',
-    fontSize: 15,
-    lineHeight: 1,
-    color: violet.violet11,
-    boxShadow: `0 0 0 1px ${violet.violet7}`,
-    height: 35,
-    '&:focus': { boxShadow: `0 0 0 2px ${violet.violet8}` },
-  });
+const Label = styled('label', {
+  fontSize: 13,
+  lineHeight: 1,
+  marginBottom: 10,
+  color: violet.violet12,
+  display: 'block',
+    variants: {
+    variant: {
+      light: {
+        color: violet.violet12,
+      },
+      dark: {
+        color: violet.violet4
+      },
+    },
+  },
 
-  const TextArea = styled('textarea', {
-    all: 'unset',
-    flex: '1 0 auto',
-    borderRadius: 4,
-    padding: '10px 10px',
-    fontSize: 15,
-    lineHeight: 1,
-    color: violet.violet11,
-    boxShadow: `0 0 0 1px ${violet.violet7}`,
-    height: 300,
-    '&:focus': { boxShadow: `0 0 0 2px ${violet.violet8}` },
-  });
+  defaultVariants: {
+    variant: 'light',
+  },
+});
+
+const Input = styled('input', {
+  all: 'unset',
+  flex: '1 0 auto',
+  borderRadius: 4,
+  padding: '0 10px',
+  fontSize: 15,
+  lineHeight: 1,
+  color: violet.violet11,
+  boxShadow: `0 0 0 1px ${violet.violet7}`,
+  height: 35,
+  '&:focus': { boxShadow: `0 0 0 2px ${violet.violet8}` },
+});
+
+const TextArea = styled('textarea', {
+  all: 'unset',
+  flex: '1 0 auto',
+  borderRadius: 4,
+  padding: '10px 10px',
+  fontSize: 15,
+  lineHeight: 1.32,
+  color: violet.violet11,
+  height: 450,
+  '&:focus': { boxShadow: `0 0 0 2px ${violet.violet8}` },
+  variants: {
+    variant: {
+      light: {
+        color: violet.violet12,
+        background: 'white',
+        boxShadow: `0 0 0 1px ${violet.violet7}`,
+      },
+      dark: {
+        color: violet.violet2,
+        background: grayDark.gray3,
+        boxShadow: `0 0 0 1px ${grayDark.gray6}`,
+        height: 720
+      },
+    },
+  },
+  defaultVariants: {
+    variant: 'light',
+  },
+});
 
 const Home: NextPage = () => {
 
-  const initialState = {title: "", transcript: ""}
+  const initialState = { title: "", transcript: "", summary: "" }
   const [data, setData] = useState(initialState)
 
   const updateState = (type: string, value: string) => {
-    console.log(type)
-    console.log(value)
     setData((data) => ({ ...data, [type]: value }))
   }
 
   const submitData = async (e) => {
     e.preventDefault()
 
-    await axios(BACKEND_API, {
-      method: "post",
-      data: { ...data },
+    // await axios(BACKEND_API, {
+    //   method: "post",
+    //   data: { ...data },
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // })
+    
+    await axios("https://transcript-to-summaryChunks-recursive-alpha-v1.jonathanquaade.repl.co/v1", {
+      method: "get",
       headers: {
         "Content-Type": "application/json",
       },
-    })
-    // setData({ title: "", transcript: "", })
+    }).then((response) => {
+      console.log(response);
+      }, (error) => {
+      console.log(error);
+    });
+    
+    setData({ title: "", transcript: "", summary:"" })
   }
 
   return (
+    <div>
     <div className={styles.container}>
       <Head>
         <title>Transcript To Summary Chunks-alpha</title>
@@ -157,6 +215,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <Flex>
       <Container>
         <InnerContainer>
           <Box>
@@ -167,24 +226,33 @@ const Home: NextPage = () => {
                 Version: Alpha V1
               </Text>
               <Fieldset>
-                <Label htmlFor="title2">Title</Label>
+                <Label htmlFor="title">Title</Label>
                 <Input id="title" name="title" type="text" placeholder="Title of interview" onChange={(e) => updateState("title", e.target.value)} value={data.title} />
               </Fieldset>
               <Fieldset>
                 <Label htmlFor="transcript">Transcript</Label>
-                <TextArea id="transcript" name="transcript" onChange={(e) => updateState("transcript", e.target.value)} value={data.transcript} placeholder="Paste your transcript here"/>
+                <TextArea id="transcript" name="transcript" onChange={(e) => updateState("transcript", e.target.value)} value={data.transcript} placeholder="Paste your transcript here" />
               </Fieldset>
               <Flex css={{ marginTop: 20, justifyContent: 'flex-end' }}>
-                <Button disabled={
-                  !data.title.length || !data.transcript.length
-                }
-                  type="submit" variant="violet">Summarise</Button>
+                <Button type="submit" variant="violet">Summarise</Button>
+                <Button disabled={ !data.title.length || !data.transcript.length } type="submit" variant="violet">Summarise</Button>
               </Flex>
             </form>
           </Box>
         </InnerContainer>
       </Container>
+      <Container>
+        <InnerContainer variant="dark">
+          <Fieldset>
+                <Label variant="dark" htmlFor="summary">Output</Label>
+                <TextArea variant="dark" id="summary" name="summary" type="text" placeholder="Your summary will appear here"  disabled={ !data.transcript.length } value={data.summary} />
+              </Fieldset>
+        </InnerContainer>
+      </Container>
+    </Flex>
+      
     </div>
+  </div>
   )
 }
 
