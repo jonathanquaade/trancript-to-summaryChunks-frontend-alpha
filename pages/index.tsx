@@ -153,7 +153,7 @@ const TextArea = styled('textarea', {
   fontSize: 15,
   lineHeight: 1.32,
   color: violet.violet11,
-  height: 450,
+  height: 400,
   '&:focus': { boxShadow: `0 0 0 2px ${violet.violet8}` },
   variants: {
     variant: {
@@ -166,7 +166,7 @@ const TextArea = styled('textarea', {
         color: violet.violet2,
         background: grayDark.gray3,
         boxShadow: `0 0 0 1px ${grayDark.gray7}`,
-        height: 720
+        height: 670
       },
     },
   },
